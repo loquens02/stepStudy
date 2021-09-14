@@ -41,8 +41,8 @@ public class SortApplication {
 //            1. input 받으면서 동시에 각 값이 몇 개씩 있는지 count 세기
             int []eachNumberCounts= new int[MAX_INPUT_VALUE]; // [0]자리에 -4000의 중복 개수 넣기
 //            Arrays.fill(eachNumberCounts, 0);
-            int inputMax=0;
-            int inputMin=4000;
+            int inputMax=-4001;
+            int inputMin=4001;
             int inputCount= 0;
             for (int i = 0; i < inputTotalCount; i++) {
                 int input= Integer.parseInt(br.readLine());
