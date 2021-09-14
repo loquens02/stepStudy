@@ -1,0 +1,7 @@
+// 구현부 import 전부
+
+public class Main {
+    public static void main(String[] args) {
+        // 구현부 메소드 내용 전부
+    }
+}
