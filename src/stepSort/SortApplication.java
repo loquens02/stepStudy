@@ -2,65 +2,87 @@ package stepSort;
 
 import java.io.*;
 import java.util.*;
-import java.util.stream.DoubleStream;
 
 public class SortApplication {
     /**
      * 단계별-정렬-좌표압축
+     * https://www.acmicpc.net/problem/18870
+     *
      * 일단 메모리, 속도 신경쓰지말고 기능만 구현해보자.
+     * 문제 어디에도 입력이 정수라는 말은 없지만 예시 출력에는 소수점이 안 붙는다.
      *
      * @link array string to double java https://stackoverflow.com/a/39307801
      * @link java 시간체크 https://hijuworld.tistory.com/2
      * @link current nanoseconds https://www.tutorialspoint.com/java/lang/system_nanotime.htm
+     * @link pattern replace java https://alvinalexander.com/source-code/java-method-replace-all-instances-pattern-in-string/
+     * @link pattern match group https://www.baeldung.com/java-regex-token-replacement
      *
-     * Stream 반환해서 쓰려고 하면 애로사항이 꽃핀다. List<> 로 반환하는 게 편하다. 그리고 한 번 쓴 stream은 재사용도 안 된다.
+     *
+     * test는 문법을 test하는 게 아니라 요구사항을 test하는 게 목적이다.
+     *
+     * 시간초과 해결 - 중복제거에서 병목
+     *  contains 중복제거랑 stream.distict() 둘다 오래 걸린다.
+     *
+     * map < sorted []Double, index> 에서
+     * 1. regex? String[] to Double[] > sort > Double[] to String[] to String > replaceAll > to Double[] .. 그냥 stream distinct가 낫겠다
+     * 2. set 으로 받기?
+     *
+     * 3. 중복제거는 필수일까? <<
+     *
+     * a. map 에 작은 순서대로 key 넣음
+     * b. key 넣으면서 index 올림
+     * c. 같은 key가 또 나옴 > index 올리지 말고 넣지도 말고 넘어감
      */
     public void Problem18870(){
         try (BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
              BufferedWriter bw = new BufferedWriter(new OutputStreamWriter(System.out))) {
 
 
+            br.readLine(); // 쓰지 않아서 받고 버림. int inputTotalCount =. int inputSize=
 
-            br.readLine(); // 쓰지 않아서 받고 버림. int inputTotalCount =
+////            long startTime=System.nanoTime(); // test.
 
-//            inputs 을 있는 그대로 받아놔야 출력할 때 순서를 알 수 있다
-//            Stream 재사용 불가: IllegalStateException: stream has already been operated upon or closed
-            double []inputs= Arrays.stream(br.readLine().split(" "))
-                    .mapToDouble(Double::parseDouble).toArray();
+//            > inputs 을 있는 그대로 받아놔야 출력할 때 순서를 알 수 있다
+            double []inputs = Arrays.stream(br.readLine().split(" ")).mapToDouble(Double::parseDouble).toArray();
 
-            StringBuilder checkSb = new StringBuilder();
-            long startTime=System.nanoTime(); // 이거 돌리는데 45200 ns 걸린다.
-            checkSb.append("\n inputs 받은 직후: ").append(System.nanoTime()-startTime);
+//            long startTime=System.nanoTime(); // test. 이거 돌리는데 45200~127900 ns 걸린다.
+
+//            StringBuilder checkSb = new StringBuilder(); // test.
+//            checkSb.append("\n 두번 째 inputs 받은 직후: ").append(System.nanoTime()-startTime); // test.
 
 
-//            inputs 을 중복제외하고 정렬한 뒤,
-            double []orderedInputs= Arrays.stream(inputs).distinct().sorted().toArray();
-            /*PriorityQueue<Double> minHeap = new PriorityQueue<>();
+//            > 정렬
+
+            PriorityQueue<Double> orderedInputs = new PriorityQueue<>();
             for(double each : inputs){
-                if(minHeap.contains(each)){ // ABC.contains(A)
+                orderedInputs.add(each);
+            }
+
+//            checkSb.append("\n 정렬 직후: ").append(System.nanoTime()-startTime); // test.
+
+
+//            > 순서정보 포함된 Map 으로 만들기- 오름차순
+//              peek 이 유지, poll 이 뽑아내는 것
+//            그냥 map 은 순서보장이 안 되고, LinkedHashMap 도 삽입시에는 순서보장이 안 되는데??
+            Map<Double, Integer> orderedInputsMap = new LinkedHashMap<>();
+            int index= 0;
+
+
+//            ordered Queue 에서 하나 빼고 poll
+//            Queue 의 다음 걸 보는데 peek
+//            둘이 같으면 지금 거 아무것도 하지 말고
+//            둘이 다르면 지금 거 Map 에 key 로 넣기
+            while(!orderedInputs.isEmpty()){
+                double currentPick= orderedInputs.poll();
+                if(1<=orderedInputs.size() && orderedInputs.peek() == currentPick){
                     continue;
                 }
-                minHeap.add(each);
-            }*/
-
-            checkSb.append("\n inputs 중복제거+정렬 직후: ").append(System.nanoTime()-startTime);
-
-
-//            순서정보 포함된 Map 으로 만들기- 오름차순
-//              List 만들어봐야 index 따오려면 기승전 이중 for 문 이라 Dictionary 가 낫겠다 싶음.
-//              heap.toArray() 는 순서보장 안 되고, .toList() 도 못 믿겠다. 차피 index 넣으려면 while 돌려야함.
-//              peek 이 유지, poll 이 뽑아내는 것 <-> 무한루프
-            Map<Double, Integer> orderedInputsMap = new HashMap<>();
-            int index= 0;
-            for(Double each : orderedInputs){
-                orderedInputsMap.put(each, index++);
+                orderedInputsMap.put(currentPick, index++);
             }
-            /*while(!mineap.isEmpty()){
-                ordereHdInputsMap.put(minHeap.poll(), index++);
-            }*/
 
 //            System.err.println("반응좀4 "+orderedInputsMap.get(inputs[0]));
-            checkSb.append("\n 정렬된 것 map 으로 만든 직후: ").append(System.nanoTime()-startTime);
+//            checkSb.append("\n 정렬된 것 map 으로 만든 직후: ").append(System.nanoTime()-startTime); // test.
+
 
 
 //            inputs 각각의 index 를 map 에서 찾아오기
@@ -71,8 +93,8 @@ public class SortApplication {
 
             bw.write(String.valueOf(sb));
 
-            checkSb.append("\n 출력 직후: ").append(System.nanoTime()-startTime);
-            bw.write(String.valueOf(checkSb));
+//            checkSb.append("\n 출력 직후: ").append(System.nanoTime()-startTime); // test.
+//            bw.write(String.valueOf(checkSb)); // test.
 
 
         } catch (IOException io) {
@@ -225,3 +247,10 @@ public class SortApplication {
         }
     }
 }
+
+
+//              List 만들어봐야 index 따오려면 기승전 이중 for 문 이라 Dictionary 가 낫겠다 싶음.
+//              heap.toArray() 는 순서보장 안 되고, .toList() 도 못 믿겠다. 차피 index 넣으려면 while 돌려야함.
+//            while(!minHeap.isEmpty()){
+//                orderedInputsMap.put(minHeap.poll(), index++);
+//            }
