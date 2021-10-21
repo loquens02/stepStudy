@@ -18,6 +18,6 @@ public class Main {
 //        sort.Problem2108();
 
         DynamicSilver ds= new DynamicSilver();
-        ds.Problem1003();
+        ds.Problem1003_2();
     }
 }
