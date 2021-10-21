@@ -1,5 +1,6 @@
 //import stepSort.SortOn2;
 //import stepSort.SortOnlogn;
+import stepDP.DynamicSilver;
 import stepSort.SortApplication;
 import stepSort.SortOn;
 import util.InputTestGenerator;
@@ -13,8 +14,10 @@ public class Main {
 //        SortOnlogn sort= new SortOnlogn();
 //        SortOn sort= new SortOn();
 
-        SortApplication sort= new SortApplication();
+//        SortApplication sort= new SortApplication();
 //        sort.Problem2108();
-        sort.Problem18870();
+
+        DynamicSilver ds= new DynamicSilver();
+        ds.Problem1003();
     }
 }
