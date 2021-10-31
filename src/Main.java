@@ -1,9 +1,7 @@
 //import stepSort.SortOn2;
 //import stepSort.SortOnlogn;
-import stepDP.DynamicSilver;
-import stepSort.SortApplication;
-import stepSort.SortOn;
-import util.InputTestGenerator;
+import stepDP.FibonacciFail;
+import stepDP.FibonacciZeroOne;
 
 public class Main {
     public static void main(String[] args) {
@@ -17,7 +15,7 @@ public class Main {
 //        SortApplication sort= new SortApplication();
 //        sort.Problem2108();
 
-        DynamicSilver ds= new DynamicSilver();
-        ds.Problem1003_2();
+        FibonacciZeroOne fzo= new FibonacciZeroOne();
+        fzo.problem1003();
     }
 }
